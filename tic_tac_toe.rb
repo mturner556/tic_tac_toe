@@ -1,16 +1,11 @@
-# Board class
-class Board
-  def initialize
-    @board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-  end
+board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-  def display_board
-    puts " #{@board[0]} | #{@board[1]} | #{@board[2]} "
-    puts "---+---+---"
-    puts " #{@board[3]} | #{@board[4]} | #{@board[5]} "
-    puts "---+---+---"
-    puts " #{@board[6]} | #{@board[7]} | #{@board[8]} "
-  end
+def display_board(board)
+  puts " #{board[0]} | #{board[1]} | #{board[2]} "
+  puts "---+---+---"
+  puts " #{board[3]} | #{board[4]} | #{board[5]} "
+  puts "---+---+---"
+  puts " #{board[6]} | #{board[7]} | #{board[8]} "
 end
 
 # Player class
@@ -25,31 +20,49 @@ end
 
 # Game class. Contains the methods for creating players and setting the board
 class Game
-  attr_reader :player_one, :player_two
-  
+  attr_reader :player_one, :player_two, :current_player
+
   def initialize
-    @player_one = nil
-    @player_two = nil
-    @current_player = nil
-    @game_board = Board.new
+    @player_one = Player.new("Matt", "X") # eplace with nil when done
+    @player_two = Player.new("Maria", "O") # replace with nil when done
+    @current_player = player_one
   end
 
-  def create_player(number)
+  def make_player(number)
     puts "Player #{number}, what is your name?"
     name = gets.chomp
-    puts "#{name}, what would you like your mark to be?" 
+    puts "#{name}, what would you like your mark to be?"
     mark = gets.chomp
     Player.new(name, mark)
   end
 
-  def set_players
-    @player_one = create_player(1)
-    @player_two = create_player(2)
+  # sets and creates the two players
+  def create_players
+    @player_one = make_player(1)
+    @player_two = make_player(2)
   end
 
-  def show_board
-    @game_board.display_board()
+  # asks the player for board selection
+  def player_selection(board)
+    puts "#{@current_player.name} place your mark."
+    selection = gets.to_i - 1
+    board[selection] = @current_player.mark
+  end
+
+  # changes the @current_player to let the players take turns
+  def turn
+    @current_player = @current_player == player_one ? player_two : player_one
   end
 end
 
+# calling and testing methods from the Game class
 new_game = Game.new
+
+i = 0
+
+while i < 9
+  display_board(board)
+  new_game.player_selection(board)
+  new_game.turn
+  i += 1
+end
