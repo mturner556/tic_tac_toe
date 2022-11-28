@@ -45,9 +45,9 @@ class Game
 
   def make_player(number)
     puts "Player #{number}, what is your name?"
-    name = gets.chomp
+    name = gets.chomp.capitalize
     puts "#{name}, what would you like your mark to be?"
-    mark = gets.chomp
+    mark = gets.chomp.capitalize
     Player.new(name, mark)
   end
 
