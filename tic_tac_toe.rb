@@ -35,12 +35,13 @@ end
 
 # Game class. Contains the methods for creating players and setting the board
 class Game
-  attr_reader :player_one, :player_two, :current_player
+  attr_reader :player_one, :player_two, :current_player, :winner
 
   def initialize
     @player_one = Player.new("Matt", "X") # eplace with nil when done
     @player_two = Player.new("Maria", "O") # replace with nil when done
     @current_player = player_one
+    @winner = nil
   end
 
   def make_player(number)
@@ -71,10 +72,20 @@ class Game
 
   # checks for a winner
   def check_winner(board, combo)
-    # if the combo is filled with the same player mark, puts winner and end the game
+    # if the combo is filled with the same player mark, puts winner and updates @winner instance variable
     combo.each do |e1, e2, e3|
       if board[e1] == @current_player.mark && board[e2] == @current_player.mark && board[e3] == @current_player.mark
-        puts "#{@current_player.name} you're have won the game!"
+        @winner = @current_player.name
+        puts "#{@current_player.name} you have won the game!"
+      end
+    end
+  end
+
+  def call_tie(board)
+    board.each do |e|
+      if e == player_one.mark || e == player_two.mark
+        @tie = true
+        puts "The match is a tie."
       end
     end
   end
@@ -89,7 +100,9 @@ i = 0
 while i < 9
   display_board(board)
   new_game.player_selection(board)
-  new_game.turn
   new_game.check_winner(board, winning_combos)
+  break if new_game.winner != nil
+  new_game.call_tie(board)
+  new_game.turn
   i += 1
 end
