@@ -1,4 +1,5 @@
 board = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+# board = ['X', 'O', 'X', 'O', 'O', 'X', 'X', 'X', 'O']
 
 def display_board(board)
   puts " #{board[0]} | #{board[1]} | #{board[2]} "
@@ -35,13 +36,14 @@ end
 
 # Game class. Contains the methods for creating players and setting the board
 class Game
-  attr_reader :player_one, :player_two, :current_player, :winner
+  attr_reader :player_one, :player_two, :current_player, :winner, :tie
 
   def initialize
     @player_one = Player.new("Matt", "X") # eplace with nil when done
     @player_two = Player.new("Maria", "O") # replace with nil when done
     @current_player = player_one
     @winner = nil
+    @tie = false
   end
 
   def make_player(number)
@@ -75,17 +77,9 @@ class Game
     # if the combo is filled with the same player mark, puts winner and updates @winner instance variable
     combo.each do |e1, e2, e3|
       if board[e1] == @current_player.mark && board[e2] == @current_player.mark && board[e3] == @current_player.mark
+        display_board(board)
         @winner = @current_player.name
         puts "#{@current_player.name} you have won the game!"
-      end
-    end
-  end
-
-  def call_tie(board)
-    board.each do |e|
-      if e == player_one.mark || e == player_two.mark
-        @tie = true
-        puts "The match is a tie."
       end
     end
   end
@@ -102,7 +96,13 @@ while i < 9
   new_game.player_selection(board)
   new_game.check_winner(board, winning_combos)
   break if new_game.winner != nil
-  new_game.call_tie(board)
+
+  if i == 8 && new_game.winner == nil
+    display_board(board)
+    puts "The match is a tie."
+  end
+
   new_game.turn
+
   i += 1
 end
